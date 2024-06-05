@@ -40,11 +40,21 @@ public class PgProductmngService implements ProductmngService{
         return pgProductmngDao.findByRecord(productId);
     }
 
+    @Override
+    public updateRecord updateid(int id) {
+        return pgProductmngDao.updateid(id);
+    }
+    public int delete(String id) {
+        return pgProductmngDao.delete(id);
+    }
+//    @Override
+//    public  int update(int id,String productId,String productName,int productPrice,Integer categoryId,String description){
+//        return  pgProductmngDao.update(id,productId,productName,productPrice,categoryId,description);
+//    }
 
-//    public int update(ProductmngRecord num) {
-//        return pgProductmngDao.update(num);
-//    }
-//    public int delete(int id) {
-//        return pgProductmngDao.delete(id);
-//    }
+    public  int update(updateRecord record){
+        return  pgProductmngDao.update(record);
+    }
 }
+
+//id,productId,productName,productPrice,categoryId,description

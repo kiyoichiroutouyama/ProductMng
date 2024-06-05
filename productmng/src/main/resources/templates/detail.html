@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>商品詳細</title>
-    <link href="c/login.css" rel="stylesheet">
+    <link href="../css/login.css" rel="stylesheet">
 </head>
 <body>
 
 <div class="header">
     <h1 class="site_logo"><a href="menu.html">商品管理システム</a></h1>
     <div class="user">
-        <p class="user_name">佐藤さん、こんにちは</p>
-        <form class="logout_form" action="logout.html" method="get">
+        <p class="user_name">[[ ${session.user.name} ]] </p>
+        <form class="logout_form" action="logout.html" method="post" th:field="*{logout}">
             <button class="custom-btn" type="submit">
-                <img src="../images/ドアアイコン.png">ログアウト</button>
+                <img src="images/ドアアイコン.png">ログアウト</button>
         </form>
     </div>
 </div>
@@ -25,7 +25,7 @@
         <div class="img_block">
             <img src="../images/マッキー.png" class="product-img"><br>
         </div>
-        <form action="delete" method="post">
+        <form th:action="@{/detail/__${productId}__}" method="post">
             <fieldset class="label-130 product_block">
                 <p class="error">エラーメッセージ</p>
                 <div>
@@ -61,7 +61,7 @@
                 <div id="modal">
                     <p class="modal-message">削除しますか？</p>
                     <div class="btns">
-                        <button type="button" id="delete-btn" class="basic-btn">削除</button>
+                        <button type="submit" id="delete-btn" class="basic-btn">削除</button>
                         <button type="button" onclick="closeModal()" class="cancel-btn">キャンセル</button>
                     </div>
                 </div>
@@ -70,12 +70,12 @@
     </div>
 </div>
 <div id="fadeLayer"></div>
-<!--<script src="./js/commons.js"></script>-->
-<!--<script>-->
-<!--    'use strict'-->
-<!--    document.getElementById('delete-btn').addEventListener('click', () => {-->
-<!--      location.href = './menu.html'-->
-<!--    })-->
-<!--</script>-->
+<script src="/js/commons.js"></script>
+<script>
+    'use strict'
+    document.getElementById('delete-btn').addEventListener('click', () => {
+      location.href = '/menu.html'
+    })
+</script>
 </body>
 </html>

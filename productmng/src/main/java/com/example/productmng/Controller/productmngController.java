@@ -7,6 +7,7 @@ import com.example.productmng.Service.PgcategoryService;
 import com.example.productmng.entity.ProductmngRecord;
 import com.example.productmng.entity.User;
 import com.example.productmng.entity.insertRecord;
+import com.example.productmng.entity.updateRecord;
 import com.example.productmng.productmngAdd;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,6 @@ public class productmngController {
 
     @GetMapping("/menu")
     public String productName(@RequestParam(name = "keyword", defaultValue = "") String keyword, Model model) {
-
         if (keyword.isEmpty()) {
             model.addAttribute("productslist", pgProductmngService.findAll());
         } else {
@@ -84,19 +84,59 @@ public class productmngController {
             }
         }
 
-    @GetMapping("detail/{productId}")
+    @GetMapping("/detail/{productId}")
     public String detail(@PathVariable("productId") String productId,Model model) {
         model.addAttribute("product", pgProductmngService.findByRecord(productId));
         model.addAttribute("category", pgcategoryService.findAll());
-        return "detail.html";
+        return "/detail";
     }
 
-    @GetMapping("updateinput/{productId}")
-    public String detail2(@ModelAttribute("updateinput") String productId,Model model) {
+    @PostMapping("/detail/{productId}")
+    public String delete(@PathVariable("productId") String productId,Model model) {
         model.addAttribute("product", pgProductmngService.findByRecord(productId));
         model.addAttribute("category", pgcategoryService.findAll());
-        return "updateinput.html";
+        model.addAttribute("delete", pgProductmngService.delete(productId));
+        return "redirect:/menu";
     }
 
+    @GetMapping("updateinput/{id}")
+    public String detail2(@ModelAttribute("updatemng") productmngAdd productmngadd,@PathVariable("id")int id, Model model) {
+        model.addAttribute("product", pgProductmngService.updateid(id));
+        var product = pgProductmngService.updateid(id);
+        productmngadd.setProductName(product.name());
+        productmngadd.setCategoryId(product.categoryId());
+        productmngadd.setProductId(product.productId());
+        productmngadd.setProductPrice(product.price());
+        productmngadd.setDescription(product.description());
+        model.addAttribute("category", pgcategoryService.findAll());
+        return "updateinput";
+    }
+
+    @PostMapping("updateinput/{id}")
+    public String update(@Validated @ModelAttribute("updatemng") productmngAdd productmngadd,@PathVariable("id")int id, BindingResult bindingResult, Model model){
+        var result3 = pgProductmngService.updateid(id);
+        var result4 = pgProductmngService.findByRecord(productmngadd.getProductId());
+        if (bindingResult.hasErrors()) {
+            return "updateinput";
+        }
+        if (result4 ==null || result3.productId().equals(productmngadd.getProductId())) {
+            pgProductmngService.update(
+                    new updateRecord(
+                            id,
+                            productmngadd.getProductId(),
+                            productmngadd.getProductName(),
+                            productmngadd.getProductPrice(),
+                            productmngadd.getCategoryId(),
+                            productmngadd.getDescription()
+                    )
+            );
+            return "redirect:/menu";
+        } else {
+            model.addAttribute("errorupdate", "商品コードが重複しています");
+            model.addAttribute("category", pgcategoryService.findAll());
+            return "updateinput";
+        }
+    }
 }
+
 

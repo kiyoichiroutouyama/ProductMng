@@ -21,6 +21,8 @@ public interface ProductmngDao {
         List<ProductmngRecord> findByName(String key);
         int insert(insertRecord user);
         updateRecord findByRecord(String productId);
-//    int update(ProductmngRecord num);
-//    int delete(int id);
+        updateRecord updateid(int id);
+        int delete(String productId);
+//        int update(int id,String productId, String name,Integer price,Integer categoryId,String description);
+        int update(updateRecord record);
 }

@@ -27,18 +27,18 @@ public class PgProductmngDao implements ProductmngDao {
     public loginpassRecord findById(String loginId, String password) {
         var param = new MapSqlParameterSource();
         param.addValue("login_id", loginId);
-        param.addValue("password",password);
+        param.addValue("password", password);
         var list = jdbcTemplate.query("SELECT * FROM users WHERE login_id = :login_id AND password =:password", param, new DataClassRowMapper<>(loginpassRecord.class));
         return list.isEmpty() ? null : list.get(0);
     }
 
-        @Override
-        public List<ProductmngRecord> findByName(String key){
-            var param = new MapSqlParameterSource();
-            param.addValue("key", "%"+key+"%");
-            return jdbcTemplate.query("SELECT products.id ,products.product_id,products.category_id, products.name,products.price,products.description,categories.name FROM products INNER JOIN categories ON products.category_id = categories.id WHERE products.name like :key", param,
-            new DataClassRowMapper<>(ProductmngRecord.class));
-        }
+    @Override
+    public List<ProductmngRecord> findByName(String key) {
+        var param = new MapSqlParameterSource();
+        param.addValue("key", "%" + key + "%");
+        return jdbcTemplate.query("SELECT products.id ,products.product_id,products.category_id, products.name,products.price,products.description,categories.name FROM products INNER JOIN categories ON products.category_id = categories.id WHERE products.name like :key", param,
+                new DataClassRowMapper<>(ProductmngRecord.class));
+    }
 
     @Override
     public int insert(insertRecord user) {
@@ -50,6 +50,7 @@ public class PgProductmngDao implements ProductmngDao {
         param.addValue("description", user.description());
         return jdbcTemplate.update("INSERT INTO products(product_id,name,price,category_id,description) VALUES(:productId,:name, :price,:categoryId, :description)", param);
     }
+
     @Override
     public updateRecord findByRecord(String productId) {
         var param = new MapSqlParameterSource();
@@ -58,23 +59,34 @@ public class PgProductmngDao implements ProductmngDao {
         return list.isEmpty() ? null : list.get(0);
     }
 
+    @Override
+    public int delete(String productId) {
+        var param = new MapSqlParameterSource();
+        param.addValue("productId", productId);
+        return jdbcTemplate.update("DELETE FROM products WHERE product_id=:productId", param);
+    }
+    @Override
+    public updateRecord updateid(int id) {
+        var param = new MapSqlParameterSource();
+        param.addValue("id", id);
+        var list = jdbcTemplate.query("SELECT * FROM products WHERE id=:id", param, new DataClassRowMapper<>(updateRecord.class));
+        return list.isEmpty() ? null : list.get(0);
+    }
+
+
+
+    @Override
+    public int update(updateRecord record) {
+        var param = new MapSqlParameterSource();
+        param.addValue("id", record.id());
+        param.addValue("productId", record.productId());
+        param.addValue("name", record.name());
+        param.addValue("price", record.price());
+        param.addValue("category_id", record.categoryId());
+        param.addValue("description", record.description());
+        return jdbcTemplate.update("UPDATE products SET  product_id=:productId,name=:name,category_id=:category_id,price=:price,description=:description WHERE id = :id", param);
+    }
+
+
 }
-//
-//    @Override
-//    public int update(ProductmngRecord updates) {
-//        var param = new MapSqlParameterSource();
-//        param.addValue("name", updates.name());
-//        param.addValue("category_id", updates.categories());
-//        param.addValue("price", updates.price());
-//        param.addValue("id", updates.id());
-//        param.addValue("description", updates.desc());
-//        return jdbcTemplate.update("UPDATE products SET  name= :name,category_id = :category_id,price= :price ,description= :description WHERE id = :id", param);
-//    }
-//
-//    @Override
-//    public int delete(int id) {
-//        var param = new MapSqlParameterSource();
-//        param.addValue("id", id);
-//        return jdbcTemplate.update("DELETE FROM products WHERE id = :id", param);
-//    }
 

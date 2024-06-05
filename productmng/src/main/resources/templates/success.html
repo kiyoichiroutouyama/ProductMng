@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <title>商品登録</title>
-<link href="css/commons.css" rel="stylesheet">
+<link href="/css/login.css" rel="stylesheet">
 </head>
 <body>
 
   <div class="header">
     <h1 class="site_logo"><a href="menu.html">商品管理システム</a></h1>
     <div class="user">
-      <p class="user_name">佐藤さん、こんにちは</p>
-      <form class="logout_form" action="logout.html" method="get">
+      <p class="user_name">[[ ${session.user.name} ]] </p>
+      <form class="logout_form" action="logout.html" method="post" th:field="*{logout}">
         <button class="custom-btn" type="submit">
           <img src="images/ドアアイコン.png">ログアウト</button>
       </form>
@@ -23,4 +23,4 @@
 
 </body>
 </html>
-<script src="./js/commons.js"></script>
+<script src="../js/commons.js"></script>
