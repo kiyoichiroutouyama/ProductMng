@@ -1,4 +1,4 @@
 package com.example.productmng.entity;
 
-public record loginpassRecord(String loginId,String password,String name){
+public record loginpassRecord(String loginId,String password,String name,Integer role){
 }

@@ -72,12 +72,15 @@ public class productmngController {
         return "insert";
     }
 
-        @PostMapping("insert")
-        public String insertP2(@Validated @ModelAttribute("productmngupdate") productmngAdd productmngadd, BindingResult bindingResult, Model model) {
+        @PostMapping("/insert")
+        public String insertP2(@Validated @ModelAttribute("productmngupdate") productmngAdd productmngadd,  BindingResult bindingResult, Model model) {
             var result2 = pgProductmngService.findByRecord(productmngadd.getProductId());
-            if (result2 == null ){
+            if (bindingResult.hasErrors()) {
+                return "insert";
+            }else if (result2 == null ){
                 pgProductmngService.insert(new insertRecord(productmngadd.getProductId(), productmngadd.getProductName(), productmngadd.getProductPrice(), productmngadd.getCategoryId(), productmngadd.getDescription()));
-                return "redirect:/insert";
+                model.addAttribute("complete", "登録に成功しました");
+                return "success";
             }else {
                 model.addAttribute("errorsyori", "商品コードが重複しています");
                 return "insert";
@@ -96,30 +99,34 @@ public class productmngController {
         model.addAttribute("product", pgProductmngService.findByRecord(productId));
         model.addAttribute("category", pgcategoryService.findAll());
         model.addAttribute("delete", pgProductmngService.delete(productId));
-        return "redirect:/menu";
+        model.addAttribute("complete", "削除に成功しました");
+        return "success";
     }
 
     @GetMapping("updateinput/{id}")
     public String detail2(@ModelAttribute("updatemng") productmngAdd productmngadd,@PathVariable("id")int id, Model model) {
         model.addAttribute("product", pgProductmngService.updateid(id));
+        model.addAttribute("category", pgcategoryService.findAll());
         var product = pgProductmngService.updateid(id);
         productmngadd.setProductName(product.name());
         productmngadd.setCategoryId(product.categoryId());
         productmngadd.setProductId(product.productId());
         productmngadd.setProductPrice(product.price());
         productmngadd.setDescription(product.description());
-        model.addAttribute("category", pgcategoryService.findAll());
+
         return "updateinput";
     }
 
     @PostMapping("updateinput/{id}")
-    public String update(@Validated @ModelAttribute("updatemng") productmngAdd productmngadd,@PathVariable("id")int id, BindingResult bindingResult, Model model){
+    public String update(@Validated @ModelAttribute("updatemng") productmngAdd productmngadd,BindingResult bindingResult,@PathVariable("id")int id,  Model model){
+        System.out.println("aaaaa");
         var result3 = pgProductmngService.updateid(id);
         var result4 = pgProductmngService.findByRecord(productmngadd.getProductId());
         if (bindingResult.hasErrors()) {
+            System.out.println("bbbb");
             return "updateinput";
-        }
-        if (result4 ==null || result3.productId().equals(productmngadd.getProductId())) {
+        }else if (result4 ==null || result3.productId().equals(productmngadd.getProductId())) {
+            System.out.println("cccc");
             pgProductmngService.update(
                     new updateRecord(
                             id,
@@ -130,10 +137,12 @@ public class productmngController {
                             productmngadd.getDescription()
                     )
             );
-            return "redirect:/menu";
+            model.addAttribute("complete", "登録に成功しました");
+            return "success";
         } else {
+            System.out.println("dddd");
             model.addAttribute("errorupdate", "商品コードが重複しています");
-            model.addAttribute("category", pgcategoryService.findAll());
+//            model.addAttribute("category", pgcategoryService.findAll());
             return "updateinput";
         }
     }

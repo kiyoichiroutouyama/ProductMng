@@ -8,22 +8,11 @@
 </head>
 <body>
 <div id="app">
-    <div class="header">
         <th:block th:insert="common/header"></th:block>
-<!--        <h1 class="site_logo"><a href="menu.html">商品管理システム</a></h1>-->
-        <div class="user">
-            <p class="user_name">[[ ${session.user.name} ]] </p>
-            <form class="logout_form" action="logout.html" method="post" th:field="*{logout}">
-                <button class="custom-btn" type="submit">
-                    <img src="images/ドアアイコン.png">ログアウト</button>
-            </form>
-        </div>
-    </div>
-
     <hr>
 
     <div class="btn-area">
-        <div class="btn"><a class="basic-btn regist" href="/insert" >新規登録</a></div>
+        <div class="btn"><a class="basic-btn regist" href="/insert" th:if="${session.user.role==1}">新規登録</a></div>
         <div class="btn"><a class="basic-btn regist" href="category.html">カテゴリ管理</a></div>
     </div>
     <p>成功メッセージ</p>
@@ -64,7 +53,7 @@
             <td th:text="${product.name}"></td>
             <td th:text ="${product.price}"></td>
             <td th:text ="${category.get(__${product.categoryId}__ -1).name}"></td>
-            <td><a class="detail_btn" th:href="@{'detail/' + ${product.productId}}">詳細</a></td>
+            <td><a class="detail_btn" th:href="@{'detail/' + ${product.productId}}" >詳細</a></td>
 
         </tr>
 <!--        <tr>-->

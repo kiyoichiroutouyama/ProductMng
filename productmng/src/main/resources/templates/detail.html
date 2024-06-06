@@ -6,18 +6,7 @@
     <link href="../css/login.css" rel="stylesheet">
 </head>
 <body>
-
-<div class="header">
-    <h1 class="site_logo"><a href="menu.html">商品管理システム</a></h1>
-    <div class="user">
-        <p class="user_name">[[ ${session.user.name} ]] </p>
-        <form class="logout_form" action="logout.html" method="post" th:field="*{logout}">
-            <button class="custom-btn" type="submit">
-                <img src="images/ドアアイコン.png">ログアウト</button>
-        </form>
-    </div>
-</div>
-
+    <th:block th:insert="common/header"></th:block>
 <hr>
 
 <div class="update">
@@ -47,15 +36,14 @@
                 <div>
                     <label>商品説明</label>
                     <textarea name="description" th:value="${product.description}" readonly class="base-text" style="background-color: rgb(209, 209, 209);">
-ゼブラ株式会社
-線の太さ：太6.0mm、細1.5～2.0mm
+
             </textarea>
                 </div>
             </fieldset>
             <div>
                 <div class="btns">
-                    <input type="button" onclick="openModal()" value="削除" class="basic-btn">
-                    <input type="button" th:onclick="|location.href='/updateinput/__${product.id}__'|" value="編集" class="basic-btn">
+                    <input type="button" onclick="openModal()" value="削除" class="basic-btn" th:if="${session.user.role==1}">
+                    <input type="button" th:onclick="|location.href='/updateinput/__${product.id}__'|" value="修正" class="basic-btn" th:if="${session.user.role==1}">
                     <input type="button" onclick="location.href='/menu'" value="戻る" class="cancel-btn">
                 </div>
                 <div id="modal">
