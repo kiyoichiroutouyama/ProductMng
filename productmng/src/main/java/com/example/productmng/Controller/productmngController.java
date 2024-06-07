@@ -4,10 +4,7 @@ package com.example.productmng.Controller;
 import com.example.productmng.LoginForm;
 import com.example.productmng.Service.PgProductmngService;
 import com.example.productmng.Service.PgcategoryService;
-import com.example.productmng.entity.ProductmngRecord;
-import com.example.productmng.entity.User;
-import com.example.productmng.entity.insertRecord;
-import com.example.productmng.entity.updateRecord;
+import com.example.productmng.entity.*;
 import com.example.productmng.productmngAdd;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +54,10 @@ public class productmngController {
 
     @GetMapping("/menu")
     public String productName(@RequestParam(name = "keyword", defaultValue = "") String keyword, Model model) {
+        loginpassRecord loginpass = (loginpassRecord)session.getAttribute("user");
+        if (loginpass == null){
+            return "redirect:/login";
+        }
         if (keyword.isEmpty()) {
             model.addAttribute("productslist", pgProductmngService.findAll());
         } else {
@@ -123,10 +124,8 @@ public class productmngController {
         var result3 = pgProductmngService.updateid(id);
         var result4 = pgProductmngService.findByRecord(productmngadd.getProductId());
         if (bindingResult.hasErrors()) {
-            System.out.println("bbbb");
             return "updateinput";
         }else if (result4 ==null || result3.productId().equals(productmngadd.getProductId())) {
-            System.out.println("cccc");
             pgProductmngService.update(
                     new updateRecord(
                             id,
@@ -140,7 +139,6 @@ public class productmngController {
             model.addAttribute("complete", "登録に成功しました");
             return "success";
         } else {
-            System.out.println("dddd");
             model.addAttribute("errorupdate", "商品コードが重複しています");
 //            model.addAttribute("category", pgcategoryService.findAll());
             return "updateinput";
